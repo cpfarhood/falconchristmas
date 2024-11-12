@@ -3,8 +3,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: overseerr
-  namespace: mediaserver
+  name: fpp
   annotations:
     traefik.ingress.kubernetes.io/router.middlewares: traefik-redirect@kubernetescrd
 spec:
@@ -17,11 +16,11 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name:  overseerr
+            name:  fpp
             port:
-              number: 5055
+              number: 80
   tls:
   - hosts:
-    - requests.farhoodliquor.com
+    - fpp.farhoodliquor.com
     secretName: farhoodliquor-com-cert-letsencrypt-prod
 

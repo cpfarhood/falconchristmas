@@ -1,0 +1,72 @@
+
+## Service
+---
+apiVersion: v1
+kind: Service
+metadata:
+   name: overseerr
+   namespace: mediaserver
+   labels:
+     app: overseerr
+spec:
+  clusterIP: None
+  ports:
+  - port: 5055
+  selector:
+    app: overseerr
+
+
+## StatefulSet
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: overseerr
+  namespace: mediaserver
+spec:
+  selector:
+    matchLabels:
+      app: overseerr
+  serviceName: "overseerr"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: overseerr
+    spec:
+      containers:
+      - name: overseer
+        image: docker.io/sctx/overseerr:latest
+        ports:
+        - containerPort: 5055
+          name: http-5055
+        volumeMounts:
+        - name: overseerr-config
+          mountPath: "/app/config"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+      volumes:
+      - name: overseerr-config
+        persistentVolumeClaim:
+          claimName: overseerr-config
+
+
+## Volumes
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: overseerr-config
+  namespace: mediaserver
+  labels:
+    name: overseerr-config
+    kustomize.toolkit.fluxcd.io/prune: disabled
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: longhorn-perpetual
+  resources:
+    requests:
+      storage: 8Gi

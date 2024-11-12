@@ -1,0 +1,34 @@
+## StatefulSet
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: overseerr
+spec:
+  selector:
+    matchLabels:
+      app: overseerr
+  serviceName: "overseerr"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: overseerr
+    spec:
+      containers:
+      - name: overseer
+        image: docker.io/sctx/overseerr:latest
+        ports:
+        - containerPort: 5055
+          name: http-5055
+        volumeMounts:
+        - name: overseerr-config
+          mountPath: "/app/config"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+      volumes:
+      - name: overseerr-config
+        persistentVolumeClaim:
+          claimName: overseerr-config

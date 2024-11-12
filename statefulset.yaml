@@ -3,32 +3,32 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: overseerr
+  name: fpp
 spec:
   selector:
     matchLabels:
-      app: overseerr
-  serviceName: "overseerr"
+      app: fpp
+  serviceName: "fpp"
   replicas: 1
   template:
     metadata:
       labels:
-        app: overseerr
+        app: fpp
     spec:
       containers:
-      - name: overseer
-        image: docker.io/sctx/overseerr:latest
+      - name: fpp
+        image: falconchristmas/fpp:latest
         ports:
         - containerPort: 5055
           name: http-5055
         volumeMounts:
-        - name: overseerr-config
-          mountPath: "/app/config"
+        - name: fpp-config
+          mountPath: "/config"
         resources:
           requests:
             memory: "256Mi"
             cpu: "100m"
       volumes:
-      - name: overseerr-config
+      - name: fpp-config
         persistentVolumeClaim:
-          claimName: overseerr-config
+          claimName: fpp-config

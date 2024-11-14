@@ -17,17 +17,22 @@ spec:
     spec:
       containers:
       - name: fpp
-        image: falconchristmas/fpp:latest
+        image: falconchristmas/fpp:8.3.1
         ports:
         - containerPort: 5055
           name: http-5055
         volumeMounts:
         - name: fpp-config
           mountPath: "/config"
+        securityContext:
+          allowPrivilegeEscalation: false          
         resources:
           requests:
             memory: "256Mi"
             cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
       volumes:
       - name: fpp-config
         persistentVolumeClaim:
